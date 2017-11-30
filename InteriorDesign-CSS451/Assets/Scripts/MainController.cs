@@ -10,7 +10,7 @@ public partial class MainController : MonoBehaviour {
     public CameraControl mainCamera = null;
 
     //EventSystem For Input
-    publi
+    
 
     //UI Elements Go Here
 
