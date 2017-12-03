@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteriorDesign-CSS451", "InteriorDesign-CSS451.csproj", "{ACF7F8E0-6E58-3503-8C5F-18FE244132A9}"
 EndProject
 Global
