@@ -67,6 +67,4 @@ public class TheWorld : MonoBehaviour {
     {
         return false;
     }
-
-    public 
 }

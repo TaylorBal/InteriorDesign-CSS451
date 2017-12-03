@@ -44,7 +44,6 @@ public class Furniture : MonoBehaviour {
     //Hierarchy restrictions can cause this to fail
     public bool AddChild(GameObject prefab)
     {
-        Debug.Log("AddChild");
         if (!IsWhitelisted(prefab.tag))
             return false;
 

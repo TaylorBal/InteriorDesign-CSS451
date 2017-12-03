@@ -6,17 +6,17 @@ using UnityEngine.UI;
 public class AddFurnitureControl : MonoBehaviour
 {
 
-    public Button addButton = null;
-    public string toMake = "Vase";
+    public AddFurnitureButton[] addButtons;
 
     public delegate void AddCallbackDelegate(string name);
     private AddCallbackDelegate mCallback = null;
     // Use this for initialization
     void Start()
     {
-        Debug.Assert(addButton != null);
-
-        addButton.onClick.AddListener(Reset);
+        for(int i = 0; i < addButtons.Length; i++)
+        {
+            addButtons[i].SetClickListener(AddFurniture);
+        }
     }
 
     public void SetAddListener(AddCallbackDelegate listener)
@@ -24,9 +24,11 @@ public class AddFurnitureControl : MonoBehaviour
         mCallback = listener;
     }
 
-    public void Reset()
+    public void AddFurniture(string name)
     {
         if (mCallback != null)
-            mCallback(toMake);
+        {
+            mCallback(name);
+        }
     }
 }
