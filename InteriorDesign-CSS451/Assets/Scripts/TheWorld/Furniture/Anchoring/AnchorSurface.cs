@@ -23,11 +23,11 @@ public class AnchorSurface : MonoBehaviour
     private float anchorTolerance = 0.01f;
 
     //for Rectangle planes
-    float width = 1.0f;                //with is along transform.right
-    float height = 1.0f;               //height is along transform.forward
+    public float width = 1.0f;                //with is along transform.right
+    public float height = 1.0f;               //height is along transform.forward
 
     //for Circular Planes
-    float radius = 1.0f;        //radius of circle around transform.up
+    public float radius = 1.0f;        //radius of circle around transform.up
 
     //FOR DEBUG PURPOSES, create primitives for visual aid?
 
@@ -44,17 +44,19 @@ public class AnchorSurface : MonoBehaviour
 
     //Anchor an object to the surface
     //Position and Orientation
-    void AnchorTransform(Furniture f)
+    public void AnchorTransform(ref Furniture f)
     {
-        //1. Anchor to the plane as a whole
-
+        //use the Furniture's Anchor offset
+        Vector3 pos = f.transform.localPosition + f.AnchorOffset;
+        //1. Anchor to the plane as a whole        
         //project a point onto a plane
-        Vector3 V = f.transform.localPosition - transform.localPosition;
+        Vector3 V = pos - transform.position;
         Vector3 H = Vector3.Dot(V, transform.up) * transform.up;
-        Vector3 projected = f.transform.localPosition - H;
+
+        f.transform.position -= H;
 
         //The projection is the new location
-        f.transform.localPosition = projected;
+        //f.transform.position = projected;
 
         //then anchor the rotation (same as ours)
         f.transform.rotation = transform.rotation;
@@ -62,16 +64,17 @@ public class AnchorSurface : MonoBehaviour
 
         //2. If not inside the surface, restrict
         //to the closest point
-        Vector3 valid = GetClosestValid(f.transform.localPosition);
-        f.transform.localPosition = valid;
+        Vector3 valid = GetClosestValid(f.transform.position, f.AnchorOffset);
+
+        f.transform.position = valid;
 
     }
 
 
     //Takes a translation and restricts it to stay within the surface
-    public Vector3 RestrictMotion(Vector3 curPos, Vector3 deltaT)
+    public Vector3 RestrictMotion(Furniture f, Vector3 deltaT)
     {
-        Vector3 fix = GetClosestValid(curPos + deltaT);
+        Vector3 fix = GetClosestValid(f.transform.position + deltaT, f.AnchorOffset);
         /*
         switch (type)
         {
@@ -105,19 +108,20 @@ public class AnchorSurface : MonoBehaviour
 
     private Vector3 CircleRestrict(Vector3 curPos, Vector3 deltaT)
     {
-
         return Vector3.zero;
     }
 
 
     //find the closest valid point to the
     //point starts in object space?
-    private Vector3 GetClosestValid(Vector3 pos)
+    private Vector3 GetClosestValid(Vector3 worldPos, Vector3 anchorOffset)
     {
         Matrix4x4 m = transform.worldToLocalMatrix;
-        Matrix4x4 mback = transform.localToWorldMatrix;
 
-        Vector3 localPos = m * pos;
+
+        Debug.Log("worldPos: " + worldPos);
+        Vector3 localPos = m.MultiplyPoint(worldPos);
+        Debug.Log("localPos: " + localPos);
 
         switch (type)
         {
@@ -125,10 +129,12 @@ public class AnchorSurface : MonoBehaviour
                 {
                     if (localPos.magnitude <= radius)
                     {
-                        return pos;                              //we're good, no need to do another matrix mult
+                        Debug.Log("we're good");
+                        return worldPos;                              //we're good, no need to do another matrix mult
                     }
                     else
                     {
+                        Debug.Log("excess");
                         float excess = localPos.magnitude - radius;     //the excess distance
                         Vector3 n = localPos.normalized;                //normal from center to localPos
                         localPos = localPos - excess * n;               //fix the localPos
@@ -160,10 +166,18 @@ public class AnchorSurface : MonoBehaviour
                     break;
                 }
             case AnchorPlaneType.invalid:
-                return Vector3.zero;
+                {
+                    Debug.Log("invalid anchor surface, cannot get a valid point");
+                    return Vector3.zero;
+                }
         }
 
-        Vector3 validPos = mback * localPos;
+        Matrix4x4 mback = transform.localToWorldMatrix;
+
+        Debug.Log("localPos: " + localPos);
+        Vector3 validPos = mback.MultiplyPoint(localPos);
+        Debug.Log("validPos: " + validPos);
+
         return validPos;
     }
 

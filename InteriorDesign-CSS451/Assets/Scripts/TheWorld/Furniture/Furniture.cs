@@ -12,7 +12,7 @@ public class Furniture : MonoBehaviour {
     public List<Material> materials;
 
     //Anchor Surface (where children can attach)
-    //public AnchorSurface anchorSurface = null;
+    public AnchorSurface anchorSurface = null;
 
     //Anchor Point (where the object meet's its
     //parent's anchor surface
@@ -21,13 +21,13 @@ public class Furniture : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        //anchorSurface = new AnchorSurface();
 	}
 	
 	// Update is called once per frame
 	void Update() { 
 	}
 
+    //check if a particular tag is whitelisted as a child
     public bool IsWhitelisted(string tag)
     {
         for(int i = 0; i < whitelist.Count; i++)
@@ -50,11 +50,21 @@ public class Furniture : MonoBehaviour {
         //Do the actual add process
         GameObject child = Instantiate(prefab, transform);
 
+        //we want to place it at the mouse position,
+        //but for now, place it at the origin of the parent
+        child.transform.position = new Vector3(5.0f, transform.position.y, 0.0f);   //transform.position;
+
         //Do some placement inside its restriction zone
         //for this we need the child's Furniture class
         Furniture childFurn = child.GetComponent<Furniture>();
 
         //NOT YET IMPLEMENTED
+        if(anchorSurface != null)
+        {
+            Debug.Log(child.transform.position);
+           anchorSurface.AnchorTransform(ref childFurn);
+            Debug.Log(child.transform.position);
+        }
 
 
         return true;
@@ -66,6 +76,8 @@ public class Furniture : MonoBehaviour {
         return Vector3.zero;
     }
 
+
+    //MATERIAL SWAPPING
 
     public bool SetMat(int index)
     {
