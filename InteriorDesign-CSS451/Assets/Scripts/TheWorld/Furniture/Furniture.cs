@@ -52,7 +52,7 @@ public class Furniture : MonoBehaviour {
 
         //we want to place it at the mouse position,
         //but for now, place it at the origin of the parent
-        child.transform.position = new Vector3(5.0f, transform.position.y, 0.0f);   //transform.position;
+        //child.transform.position =  new Vector3(-5.0f, 4.0f, 20.0f); //transform.position;
 
         //Do some placement inside its restriction zone
         //for this we need the child's Furniture class

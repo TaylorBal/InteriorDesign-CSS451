@@ -19,9 +19,6 @@ public class AnchorSurface : MonoBehaviour
 
     public AnchorPlaneType type = AnchorPlaneType.invalid;
 
-    //how close an object needs to be to be considered "anchored"
-    private float anchorTolerance = 0.01f;
-
     //for Rectangle planes
     public float width = 1.0f;                //with is along transform.right
     public float height = 1.0f;               //height is along transform.forward
@@ -48,6 +45,8 @@ public class AnchorSurface : MonoBehaviour
     {
         //use the Furniture's Anchor offset
         Vector3 pos = f.transform.localPosition + f.AnchorOffset;
+
+
         //1. Anchor to the plane as a whole        
         //project a point onto a plane
         Vector3 V = pos - transform.position;
@@ -55,60 +54,20 @@ public class AnchorSurface : MonoBehaviour
 
         f.transform.position -= H;
 
-        //The projection is the new location
-        //f.transform.position = projected;
-
         //then anchor the rotation (same as ours)
         f.transform.rotation = transform.rotation;
-
 
         //2. If not inside the surface, restrict
         //to the closest point
         Vector3 valid = GetClosestValid(f.transform.position, f.AnchorOffset);
-
         f.transform.position = valid;
-
     }
 
 
     //Takes a translation and restricts it to stay within the surface
     public Vector3 RestrictMotion(Furniture f, Vector3 deltaT)
     {
-        Vector3 fix = GetClosestValid(f.transform.position + deltaT, f.AnchorOffset);
-        /*
-        switch (type)
-        {
-            case AnchorPlaneType.rectangle:
-                {
-                    return RectangleRestrict(curPos, deltaT);
-                }
-            case AnchorPlaneType.circle:
-                {
-                    return CircleRestrict(curPos, deltaT);
-                }
-            case AnchorPlaneType.invalid:
-                return Vector3.zero;
-        }
-        */
-        return fix;
-        //return Vector3.zero;
-    }
-
-    private Vector3 RectangleRestrict(Vector3 curPos, Vector3 deltaT)
-    {
-        Vector3 adjustedDelta = deltaT;
-        Vector3 targetPos = curPos + deltaT;
-
-        //if (curpos.x + adjustedDelta.x)
-
-
-
-        return Vector3.zero;
-    }
-
-    private Vector3 CircleRestrict(Vector3 curPos, Vector3 deltaT)
-    {
-        return Vector3.zero;
+        return GetClosestValid(f.transform.position + deltaT, f.AnchorOffset);
     }
 
 
@@ -117,11 +76,7 @@ public class AnchorSurface : MonoBehaviour
     private Vector3 GetClosestValid(Vector3 worldPos, Vector3 anchorOffset)
     {
         Matrix4x4 m = transform.worldToLocalMatrix;
-
-
-        Debug.Log("worldPos: " + worldPos);
-        Vector3 localPos = m.MultiplyPoint(worldPos);
-        Debug.Log("localPos: " + localPos);
+        Vector3 localPos = m.MultiplyPoint(worldPos + anchorOffset);
 
         switch (type)
         {
@@ -173,12 +128,9 @@ public class AnchorSurface : MonoBehaviour
         }
 
         Matrix4x4 mback = transform.localToWorldMatrix;
-
-        Debug.Log("localPos: " + localPos);
         Vector3 validPos = mback.MultiplyPoint(localPos);
-        Debug.Log("validPos: " + validPos);
 
-        return validPos;
+        return validPos - anchorOffset;
     }
 
 }
