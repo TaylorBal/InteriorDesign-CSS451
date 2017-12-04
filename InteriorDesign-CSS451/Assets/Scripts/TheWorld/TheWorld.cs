@@ -20,7 +20,8 @@ public class TheWorld : MonoBehaviour {
     //A Dictionary is preferred, but they're not serializeable :(
     public NamedPrefab[] furniturePrefabs;
 
-    Furniture theRoom = null;
+    //Essentially our "Root" node of the hierarchy
+    public Furniture theRoom = null;
 
 	// Use this for initialization
 	void Start () {

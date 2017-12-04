@@ -40,6 +40,7 @@ public class AnchorSurface : MonoBehaviour
         circlePlanePrim = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         circlePlanePrim.transform.parent = transform;
         circlePlanePrim.transform.localPosition = Vector3.zero;
+        circlePlanePrim.transform.localRotation = Quaternion.identity;
         circlePlanePrim.transform.localScale = new Vector3(2 * radius, 0.01f, 2 * radius);
         MeshRenderer mr = circlePlanePrim.GetComponent<MeshRenderer>();
         mr.material = AnchorDebugMaterial;
@@ -47,34 +48,21 @@ public class AnchorSurface : MonoBehaviour
         rectPlanePrim = GameObject.CreatePrimitive(PrimitiveType.Cube);
         rectPlanePrim.transform.parent = transform;
         rectPlanePrim.transform.localPosition = Vector3.zero;
+        rectPlanePrim.transform.localRotation = Quaternion.identity;
         rectPlanePrim.transform.localScale = new Vector3(width, 0.01f, height);
         mr = rectPlanePrim.GetComponent<MeshRenderer>();
         mr.material = AnchorDebugMaterial;
 
 
+        circlePlanePrim.SetActive(false);
+        rectPlanePrim.SetActive(false);
 
-        if (showSurface)
-        {
-            switch (type)
-            {
-                case AnchorPlaneType.circle:
-                    rectPlanePrim.SetActive(false);
-                    break;
-                case AnchorPlaneType.rectangle:
-                    circlePlanePrim.SetActive(false);
-                    break;
-            }
-        }
-        else
-        {
-            circlePlanePrim.SetActive(false);
-            rectPlanePrim.SetActive(false);
-        }
+        SetVisible(showSurface);
     }
 
     void Update()
     {
-
+        SetVisible(showSurface);
     }
 
     public void SetVisible(bool visible)
@@ -90,6 +78,10 @@ public class AnchorSurface : MonoBehaviour
                 case AnchorPlaneType.rectangle:
                     circlePlanePrim.SetActive(false);
                     rectPlanePrim.SetActive(true);
+                    break;
+                case AnchorPlaneType.invalid:
+                    circlePlanePrim.SetActive(false);
+                    rectPlanePrim.SetActive(false);
                     break;
             }
         }
