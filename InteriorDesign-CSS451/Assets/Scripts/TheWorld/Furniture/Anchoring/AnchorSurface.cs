@@ -133,13 +133,15 @@ public class AnchorSurface : MonoBehaviour
         Matrix4x4 m = transform.worldToLocalMatrix;
         Vector3 localPos = m.MultiplyPoint(worldPos + anchorOffset);
 
+        localPos.y = 0;
+
         switch (type)
         {
             case AnchorPlaneType.circle:
                 {
                     if (localPos.magnitude <= radius)
                     {
-                        return worldPos;                              //we're good, no need to do another matrix mult
+                        break;
                     }
                     else
                     {
@@ -161,14 +163,14 @@ public class AnchorSurface : MonoBehaviour
                         localPos.x = width / 2;
                     }
 
-                    //fix the relative y-axis
-                    if(localPos.y < -height / 2)
+                    //fix the relative z-axis
+                    if(localPos.z < -height / 2)
                     {
-                        localPos.y = -height / 2;
+                        localPos.z = -height / 2;
                     }
-                    else if(localPos.y > height / 2)
+                    else if(localPos.z > height / 2)
                     {
-                        localPos.y = height / 2;
+                        localPos.z = height / 2;
                     }
 
                     break;

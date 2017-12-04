@@ -18,7 +18,7 @@ public class Furniture : MonoBehaviour {
 
     //Anchor Surface (where children can attach)
     public AnchorSurface anchorSurface = null;
-    private AnchorSurface parentAnchorSurface = null;
+    public AnchorSurface parentAnchorSurface = null;
 
     //Anchor Point (where the object meet's its
     //parent's anchor surface
@@ -27,10 +27,15 @@ public class Furniture : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
 	}
 	
 	// Update is called once per frame
 	void Update() { 
+        if(parent != null && parentAnchorSurface == null)
+        {
+            parentAnchorSurface = parent.GetAnchorSurface();
+        }
 	}
 
     public void SetAnchorSurfaceVisible(bool visible)
@@ -54,7 +59,7 @@ public class Furniture : MonoBehaviour {
     {
         if(parentAnchorSurface != null)
         {
-            transform.position += parentAnchorSurface.RestrictMotion(this, deltaPos);
+            transform.position = parentAnchorSurface.RestrictMotion(this, deltaPos);
         }
         else
         {
@@ -63,16 +68,26 @@ public class Furniture : MonoBehaviour {
 
     }
 
-    public void Rotate(Quaternion q)
+    public void Rotate(Vector3 axis, float angle)
     {
         //I don't have rotation restrictions set up yet
-        transform.localRotation *= q;
+        //transform.localRotation *= q;
+    }
+
+    public void Scale(Vector3 scaleDelta)
+    {
+
     }
 
 
     public void SetParentAnchor(AnchorSurface parentAnchor)
     {
         parentAnchorSurface = parentAnchor;
+    }
+
+    public AnchorSurface GetAnchorSurface()
+    {
+        return anchorSurface;
     }
 
     //check if a particular tag is whitelisted as a child

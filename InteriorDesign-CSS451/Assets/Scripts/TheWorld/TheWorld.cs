@@ -30,7 +30,6 @@ public partial class TheWorld : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        LMBService();
 	}
 
 
@@ -74,5 +73,15 @@ public partial class TheWorld : MonoBehaviour {
     public void SetAnchorSufacesVisible(bool visible)
     {
         theRoom.SetAnchorSurfaceVisible(visible);
+    }
+
+    public bool IsTagFurniture(string tag)
+    {
+        for (int i = 0; i < furniturePrefabs.Length; i++)
+        {
+            if (furniturePrefabs[i].name == tag)
+                return true;
+        }
+        return false;
     }
 }
