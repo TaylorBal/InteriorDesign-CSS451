@@ -5,6 +5,7 @@ using UnityEngine;
 public class PreviewCameraControl : MonoBehaviour {
 
     GameObject previewObject = null;
+    GameObject originalObject = null;
     Vector3 offset = new Vector3(0, -1, -4);
 
 	// Use this for initialization
@@ -17,8 +18,22 @@ public class PreviewCameraControl : MonoBehaviour {
 		
 	}
 
-    public void SnapObjectToCamera(GameObject previewObject)
+    /// <summary>
+    /// Clone object in preview layer.
+    /// </summary>
+    /// <param name="inObject"></param>
+    public void OpenPreviewObject(GameObject inObject)
     {
-        previewObject.transform.localPosition = transform.localPosition + offset;
+        originalObject = inObject;
+        
+        
+    }
+
+    /// <summary>
+    /// Apply any valid changes. Destroy preview clone.
+    /// </summary>
+    public void ClosePreviewObject()
+    {
+
     }
 }
