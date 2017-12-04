@@ -97,7 +97,7 @@ public class AnchorSurface : MonoBehaviour
     public void AnchorTransform(ref Furniture f)
     {
         //use the Furniture's Anchor offset
-        Vector3 pos = f.transform.localPosition + f.AnchorOffset;
+        Vector3 pos = f.transform.position + f.AnchorOffset;
 
 
         //1. Anchor to the plane as a whole        
@@ -109,7 +109,9 @@ public class AnchorSurface : MonoBehaviour
 
         //then anchor the rotation (same as ours)
         f.transform.rotation = transform.rotation;
+        return;
 
+        
         //2. If not inside the surface, restrict
         //to the closest point
         Vector3 valid = GetClosestValid(f.transform.position, f.AnchorOffset);

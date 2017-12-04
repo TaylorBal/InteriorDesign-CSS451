@@ -18,7 +18,7 @@ public class Furniture : MonoBehaviour {
 
     //Anchor Surface (where children can attach)
     public AnchorSurface anchorSurface = null;
-    public AnchorSurface parentAnchorSurface = null;
+    private AnchorSurface parentAnchorSurface = null;
 
     //Anchor Point (where the object meet's its
     //parent's anchor surface
