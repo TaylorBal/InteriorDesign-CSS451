@@ -6,7 +6,7 @@ using System;
 
 
 
-public class TheWorld : MonoBehaviour {
+public partial class TheWorld : MonoBehaviour {
 
     //store a . This way we can look up
     //and instantiate by name
@@ -30,7 +30,7 @@ public class TheWorld : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+        LMBService();
 	}
 
 
