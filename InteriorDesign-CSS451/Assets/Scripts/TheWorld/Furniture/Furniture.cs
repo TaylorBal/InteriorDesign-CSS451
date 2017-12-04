@@ -8,11 +8,17 @@ public class Furniture : MonoBehaviour {
     //have as children
     public List<string> whitelist;
 
+    public Furniture parent = null;
+    public List<Furniture> childrenFurniture;
+
     //A list of materials the user can choose from for this Furniture
     public List<Material> materials;
 
+
+
     //Anchor Surface (where children can attach)
     public AnchorSurface anchorSurface = null;
+    public AnchorSurface parentAnchorSurface = null;
 
     //Anchor Point (where the object meet's its
     //parent's anchor surface
@@ -26,6 +32,48 @@ public class Furniture : MonoBehaviour {
 	// Update is called once per frame
 	void Update() { 
 	}
+
+    public void SetAnchorSurfaceVisible(bool visible)
+    {
+        if(anchorSurface != null)
+        {
+            anchorSurface.SetVisible(visible);
+            foreach(Furniture f in childrenFurniture)
+            {
+                f.SetAnchorSurfaceVisible(visible);
+            }
+        }
+    }
+
+    /*
+     * Transform modificaton
+     * ->We implement our own because they are restricted
+     * ->By properties of the furniture itself
+     */
+    public void Translate(Vector3 deltaPos)
+    {
+        if(parentAnchorSurface != null)
+        {
+            transform.position += parentAnchorSurface.RestrictMotion(this, deltaPos);
+        }
+        else
+        {
+            transform.position += deltaPos;
+        }
+
+    }
+
+    public void Rotate(Quaternion q)
+    {
+        //I don't have rotation restrictions set up yet
+        transform.localRotation *= q;
+    }
+
+
+    public void SetParentAnchor(AnchorSurface parentAnchor)
+    {
+        parentAnchorSurface = parentAnchor;
+    }
 
     //check if a particular tag is whitelisted as a child
     public bool IsWhitelisted(string tag)
@@ -52,30 +100,47 @@ public class Furniture : MonoBehaviour {
 
         //we want to place it at the mouse position,
         //but for now, place it at the origin of the parent
-        //child.transform.position =  new Vector3(-5.0f, 4.0f, 20.0f); //transform.position;
+        child.transform.localPosition = Vector3.zero;
 
         //Do some placement inside its restriction zone
         //for this we need the child's Furniture class
         Furniture childFurn = child.GetComponent<Furniture>();
+        childrenFurniture.Add(childFurn);
+        childFurn.parent = this;
+
+        childFurn.SetParentAnchor(anchorSurface);
 
         //NOT YET IMPLEMENTED
         if(anchorSurface != null)
         {
-            Debug.Log(child.transform.position);
            anchorSurface.AnchorTransform(ref childFurn);
-            Debug.Log(child.transform.position);
         }
-
 
         return true;
     }
 
-    public Vector3 RestrictChildMotion(Vector3 childPos, Vector3 deltaT)
+    public bool DeleteChild(Furniture child)
     {
-        //return anchorSurface.RestrictMotion(childPos, deltaT);
-        return Vector3.zero;
+        //is the piece of furniture even a child?
+        if (!childrenFurniture.Contains(child))
+            return false;
+
+        child.DeleteAllChildren();
+        childrenFurniture.Remove(child);
+        Destroy(child);
+
+        return true;
     }
 
+    public void DeleteAllChildren()
+    {
+        foreach(Furniture child in childrenFurniture)
+        {
+            child.DeleteAllChildren();
+            childrenFurniture.Remove(child);
+            Destroy(child);
+        }
+    }
 
     //MATERIAL SWAPPING
 

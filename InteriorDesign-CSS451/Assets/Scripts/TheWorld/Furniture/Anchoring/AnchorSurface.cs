@@ -27,16 +27,77 @@ public class AnchorSurface : MonoBehaviour
     public float radius = 1.0f;        //radius of circle around transform.up
 
     //FOR DEBUG PURPOSES, create primitives for visual aid?
+    private GameObject circlePlanePrim = null;
+    private GameObject rectPlanePrim = null;
+    public bool showSurface = false;
+    public Material AnchorDebugMaterial = null;
 
     // Use this for initialization
     void Start()
     {
+        Debug.Assert(AnchorDebugMaterial != null);
 
+        circlePlanePrim = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        circlePlanePrim.transform.parent = transform;
+        circlePlanePrim.transform.localPosition = Vector3.zero;
+        circlePlanePrim.transform.localScale = new Vector3(2 * radius, 0.01f, 2 * radius);
+        MeshRenderer mr = circlePlanePrim.GetComponent<MeshRenderer>();
+        mr.material = AnchorDebugMaterial;
+
+        rectPlanePrim = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        rectPlanePrim.transform.parent = transform;
+        rectPlanePrim.transform.localPosition = Vector3.zero;
+        rectPlanePrim.transform.localScale = new Vector3(width, 0.01f, height);
+        mr = rectPlanePrim.GetComponent<MeshRenderer>();
+        mr.material = AnchorDebugMaterial;
+
+
+
+        if (showSurface)
+        {
+            switch (type)
+            {
+                case AnchorPlaneType.circle:
+                    rectPlanePrim.SetActive(false);
+                    break;
+                case AnchorPlaneType.rectangle:
+                    circlePlanePrim.SetActive(false);
+                    break;
+            }
+        }
+        else
+        {
+            circlePlanePrim.SetActive(false);
+            rectPlanePrim.SetActive(false);
+        }
     }
 
     void Update()
     {
 
+    }
+
+    public void SetVisible(bool visible)
+    {
+        if (visible)
+        {
+            switch (type)
+            {
+                case AnchorPlaneType.circle:
+                    circlePlanePrim.SetActive(true);
+                    rectPlanePrim.SetActive(false);
+                    break;
+                case AnchorPlaneType.rectangle:
+                    circlePlanePrim.SetActive(false);
+                    rectPlanePrim.SetActive(true);
+                    break;
+            }
+        }
+        else
+        {
+            circlePlanePrim.SetActive(false);
+            rectPlanePrim.SetActive(false);
+        }
     }
 
     //Anchor an object to the surface
@@ -84,12 +145,10 @@ public class AnchorSurface : MonoBehaviour
                 {
                     if (localPos.magnitude <= radius)
                     {
-                        Debug.Log("we're good");
                         return worldPos;                              //we're good, no need to do another matrix mult
                     }
                     else
                     {
-                        Debug.Log("excess");
                         float excess = localPos.magnitude - radius;     //the excess distance
                         Vector3 n = localPos.normalized;                //normal from center to localPos
                         localPos = localPos - excess * n;               //fix the localPos

@@ -20,9 +20,11 @@ public class TheWorld : MonoBehaviour {
     //A Dictionary is preferred, but they're not serializeable :(
     public NamedPrefab[] furniturePrefabs;
 
+    Furniture theRoom = null;
+
 	// Use this for initialization
 	void Start () {
-		
+        Debug.Assert(theRoom != null);
 	}
 	
 	// Update is called once per frame
@@ -63,8 +65,13 @@ public class TheWorld : MonoBehaviour {
     }
 
     //Remove a piece of furniture from the scene
-    public bool RemoveFurniture(Furniture toRemove, bool removeChildren)
+    public bool RemoveFurniture(Furniture toRemove)
     {
-        return false;
+        return toRemove.parent.DeleteChild(toRemove);
+    }
+
+    public void SetAnchorSufacesVisible(bool visible)
+    {
+        theRoom.SetAnchorSurfaceVisible(visible);
     }
 }
