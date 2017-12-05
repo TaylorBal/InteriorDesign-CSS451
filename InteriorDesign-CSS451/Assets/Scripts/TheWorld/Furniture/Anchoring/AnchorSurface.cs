@@ -62,11 +62,12 @@ public class AnchorSurface : MonoBehaviour
 
     void Update()
     {
-        SetVisible(showSurface);
     }
 
     public void SetVisible(bool visible)
     {
+        showSurface = visible;
+        //Debug.Log("Set visible");
         if (visible)
         {
             switch (type)
@@ -90,6 +91,11 @@ public class AnchorSurface : MonoBehaviour
             circlePlanePrim.SetActive(false);
             rectPlanePrim.SetActive(false);
         }
+    }
+
+    public bool IsVisible()
+    {
+        return showSurface;
     }
 
     //Anchor an object to the surface

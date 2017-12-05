@@ -23,6 +23,7 @@ public partial class MainController : MonoBehaviour {
 
     //UI Elements Go Here
     public AddFurnitureControl addControl = null;
+    public AnchorPlaneControl aPlaneControl = null;
 
     // Use this for initialization
     void Start()
@@ -35,7 +36,12 @@ public partial class MainController : MonoBehaviour {
         //Debug.Assert(addControl != null);
         Debug.Assert(testParent != null);
 
+        //UI asserts
+        Debug.Assert(addControl != null);
+        Debug.Assert(aPlaneControl != null);
+
         addControl.SetAddListener(AddFurniture);
+        aPlaneControl.SetToggleListener(SetAnchorPlaneVisible);
     }
 
     // Update is called once per frame
@@ -48,5 +54,10 @@ public partial class MainController : MonoBehaviour {
     void AddFurniture(string toAdd)
     {
         theWorld.AddFurniture(toAdd, testParent);
+    }
+
+    void SetAnchorPlaneVisible(bool visible)
+    {
+        theWorld.SetAnchorSufacesVisible(visible);
     }
 }

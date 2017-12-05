@@ -40,13 +40,14 @@ public class Furniture : MonoBehaviour {
 
     public void SetAnchorSurfaceVisible(bool visible)
     {
-        if(anchorSurface != null)
+        if (anchorSurface != null)
         {
             anchorSurface.SetVisible(visible);
-            foreach(Furniture f in childrenFurniture)
-            {
-                f.SetAnchorSurfaceVisible(visible);
-            }
+        }
+
+        foreach(Furniture f in childrenFurniture)
+        {
+            f.SetAnchorSurfaceVisible(visible);
         }
     }
 
