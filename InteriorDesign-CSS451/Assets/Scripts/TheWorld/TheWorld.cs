@@ -30,7 +30,9 @@ public partial class TheWorld : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	}
+        Matrix4x4 m = Matrix4x4.TRS(transform.localPosition, transform.localRotation, transform.localScale);
+        theRoom.CompositeXForm(ref m);
+    }
 
 
     /*
