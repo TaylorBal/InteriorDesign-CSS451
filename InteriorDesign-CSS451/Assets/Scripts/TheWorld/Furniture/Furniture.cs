@@ -30,7 +30,7 @@ public class Furniture : MonoBehaviour {
     //Anchor Point (where the object meet's its
     //parent's anchor surface
     //can also serve as a rotation anchor
-    public Vector3 AnchorOffset = Vector3.zero;
+    public Vector3 AnchorPoint = Vector3.zero;
 
     private BoxCollider selectionCollider = null;
 

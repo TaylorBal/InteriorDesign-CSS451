@@ -18,6 +18,8 @@ public class AnchorSurface : MonoBehaviour
 
     public AnchorPlaneType type = AnchorPlaneType.rectangle;
 
+    public Vector3 AnchorOffset = Vector3.zero;
+
     //for Rectangle planes
     public float width = 1.0f;                //with is along transform.right
     public float height = 1.0f;               //height is along transform.forward
@@ -74,7 +76,9 @@ public class AnchorSurface : MonoBehaviour
         Vector3 s = new Vector3(c0.magnitude, c1.magnitude, c2.magnitude);
         Quaternion q = Quaternion.LookRotation(c2 / s.y, c1 / s.z); // creates a rotation matrix with c2-Forward, c1-up
 
-        transform.position = pXForm.GetColumn(3);
+        transform.position = pXForm.GetColumn(3);       //using localPosition here does WEIRD things?
+        transform.localPosition += AnchorOffset;
+
         transform.localScale = s;
     }
 
@@ -113,7 +117,7 @@ public class AnchorSurface : MonoBehaviour
     {
         //use the Furniture's Anchor offset
         Vector3 furniturePos = f.getXForm().GetColumn(3);
-        Vector3 anchorPoint = furniturePos + f.AnchorOffset;
+        Vector3 anchorPoint = furniturePos + f.AnchorPoint;
 
 
         //1. Anchor to the plane as a whole        
@@ -133,7 +137,7 @@ public class AnchorSurface : MonoBehaviour
     public Vector3 FixDelta(Furniture f, Vector3 deltaT)
     {
         Vector3 furniturePos = f.getXForm().GetColumn(3);
-        Vector3 valid = Restrain(furniturePos, deltaT, f.AnchorOffset);
+        Vector3 valid = Restrain(furniturePos, deltaT, f.AnchorPoint);
         return valid - furniturePos;
 
     }
