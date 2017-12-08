@@ -31,7 +31,9 @@ public partial class TheWorld : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         Matrix4x4 m = Matrix4x4.TRS(transform.localPosition, transform.localRotation, transform.localScale);
-        theRoom.CompositeXForm(ref m);
+        Vector3 pivot = Vector3.zero;
+        Vector3 up = Vector3.up;
+        theRoom.CompositeXForm(ref m, out pivot, out up);
     }
 
 

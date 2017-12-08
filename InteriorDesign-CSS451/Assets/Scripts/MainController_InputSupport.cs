@@ -8,8 +8,6 @@ public partial class MainController : MonoBehaviour
     public enum manipAxis { nullAxis, xAxis, yAxis, zAxis };
     manipAxis curManipAxis;
 
-
-
     private void ProcessInput()
     {
         if (Input.GetMouseButtonDown(0))
@@ -53,14 +51,12 @@ public partial class MainController : MonoBehaviour
         
         if(axesHit)
         {
-            Debug.Log("Axes hit");
             ResetAxis();
 
             axis = selectedObject;
             axisBehavior = axis.GetComponent<AxisBehavior>();
             if(axisBehavior != null)
             {
-                Debug.Log("Select axis!");
                 // Select axis and save orientation
                 switch (axisBehavior.Select())
                 {
@@ -96,6 +92,7 @@ public partial class MainController : MonoBehaviour
             }
             ResetManipulator();
             manipulator.Select(selectedFurniture);
+            selectedFurniture.AxisFrame = manipulator.transform;
             return;
         }
 

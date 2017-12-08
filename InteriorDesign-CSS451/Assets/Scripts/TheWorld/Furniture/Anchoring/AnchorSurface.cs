@@ -12,12 +12,11 @@ public class AnchorSurface : MonoBehaviour
 
     public enum AnchorPlaneType
     {
-        invalid,
         rectangle,
         circle
     }
 
-    public AnchorPlaneType type = AnchorPlaneType.invalid;
+    public AnchorPlaneType type = AnchorPlaneType.rectangle;
 
     //for Rectangle planes
     public float width = 1.0f;                //with is along transform.right
@@ -32,10 +31,13 @@ public class AnchorSurface : MonoBehaviour
     public bool showSurface = false;
     public Material AnchorDebugMaterial = null;
 
+    public Furniture parent = null;
+
     // Use this for initialization
     void Start()
     {
         Debug.Assert(AnchorDebugMaterial != null);
+        Debug.Assert(parent != null);
 
         circlePlanePrim = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         circlePlanePrim.transform.parent = transform;
@@ -53,21 +55,32 @@ public class AnchorSurface : MonoBehaviour
         mr = rectPlanePrim.GetComponent<MeshRenderer>();
         mr.material = AnchorDebugMaterial;
 
-
-        circlePlanePrim.SetActive(false);
-        rectPlanePrim.SetActive(false);
-
         SetVisible(showSurface);
     }
 
     void Update()
+    { 
+        UpdateTransform();
+    }
+
+    void UpdateTransform()
     {
+        Matrix4x4 pXForm = parent.getXForm();
+
+        // let's decompose the combined matrix into R, and S
+        Vector3 c0 = pXForm.GetColumn(0);
+        Vector3 c1 = pXForm.GetColumn(1);
+        Vector3 c2 = pXForm.GetColumn(2);
+        Vector3 s = new Vector3(c0.magnitude, c1.magnitude, c2.magnitude);
+        Quaternion q = Quaternion.LookRotation(c2 / s.y, c1 / s.z); // creates a rotation matrix with c2-Forward, c1-up
+
+        transform.position = pXForm.GetColumn(3);
+        transform.localScale = s;
     }
 
     public void SetVisible(bool visible)
     {
         showSurface = visible;
-        //Debug.Log("Set visible");
         if (visible)
         {
             switch (type)
@@ -79,10 +92,6 @@ public class AnchorSurface : MonoBehaviour
                 case AnchorPlaneType.rectangle:
                     circlePlanePrim.SetActive(false);
                     rectPlanePrim.SetActive(true);
-                    break;
-                case AnchorPlaneType.invalid:
-                    circlePlanePrim.SetActive(false);
-                    rectPlanePrim.SetActive(false);
                     break;
             }
         }
@@ -103,43 +112,45 @@ public class AnchorSurface : MonoBehaviour
     public void AnchorTransform(ref Furniture f)
     {
         //use the Furniture's Anchor offset
-        Vector3 pos = f.transform.position + f.AnchorOffset;
+        Vector3 furniturePos = f.getXForm().GetColumn(3);
+        Vector3 anchorPoint = furniturePos + f.AnchorOffset;
 
 
         //1. Anchor to the plane as a whole        
         //project a point onto a plane
-        Vector3 V = pos - transform.position;
+        Vector3 V = anchorPoint - transform.position;
         Vector3 H = Vector3.Dot(V, transform.up) * transform.up;
 
-        f.transform.position -= H;
+        //clamp
+        f.Pivot -= H;
+        //furniturePos -= H;
 
         //then anchor the rotation (same as ours)
         f.transform.rotation = transform.rotation;
-        return;
-
-        
-        //2. If not inside the surface, restrict
-        //to the closest point
-        Vector3 valid = GetClosestValid(f.transform.position, f.AnchorOffset);
-        f.transform.position = valid;
     }
 
-
     //Takes a translation and restricts it to stay within the surface
-    public Vector3 RestrictMotion(Furniture f, Vector3 deltaT)
+    public Vector3 FixDelta(Furniture f, Vector3 deltaT)
     {
-        return GetClosestValid(f.transform.position + deltaT, f.AnchorOffset);
+        Vector3 furniturePos = f.getXForm().GetColumn(3);
+        Vector3 valid = Restrain(furniturePos, deltaT, f.AnchorOffset);
+        return valid - furniturePos;
+
     }
 
 
     //find the closest valid point to the
     //point starts in object space?
-    private Vector3 GetClosestValid(Vector3 worldPos, Vector3 anchorOffset)
+    private Vector3 Restrain(Vector3 furniturePos, Vector3 delta, Vector3 anchorOffset)
     {
         Matrix4x4 m = transform.worldToLocalMatrix;
-        Vector3 localPos = m.MultiplyPoint(worldPos + anchorOffset);
 
-        localPos.y = 0;
+        //remove the relative y-axis movement
+        Vector3 Y = Vector3.Dot(delta, transform.up) * transform.up;
+        delta -= Y;
+
+        Vector3 localPos = m.MultiplyPoint(furniturePos + anchorOffset + delta);
+        
 
         switch (type)
         {
@@ -180,11 +191,6 @@ public class AnchorSurface : MonoBehaviour
                     }
 
                     break;
-                }
-            case AnchorPlaneType.invalid:
-                {
-                    Debug.Log("invalid anchor surface, cannot get a valid point");
-                    return Vector3.zero;
                 }
         }
 

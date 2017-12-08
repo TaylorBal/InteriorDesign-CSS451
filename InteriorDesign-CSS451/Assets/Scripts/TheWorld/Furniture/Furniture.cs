@@ -6,12 +6,19 @@ using UnityEngine;
 //Aso serves as a SceneNode Class
 public class Furniture : MonoBehaviour {
 
+    //the location the node pivots around when scaling and rotating
+    public Vector3 Pivot = Vector3.zero;
+
+    public Furniture parent = null;
+    public List<Furniture> childrenFurniture;
+
     //a whitelist of furniture this piece can
     //have as children
     public List<string> whitelist;
 
-    public Furniture parent = null;
-    public List<Furniture> childrenFurniture;
+    //parent
+    private Matrix4x4 mCombinedParentXForm = Matrix4x4.identity;
+    public List<NodePrimitive> primitives;
 
     //A list of materials the user can choose from for this Furniture
     public List<Material> materials;
@@ -25,7 +32,7 @@ public class Furniture : MonoBehaviour {
     //can also serve as a rotation anchor
     public Vector3 AnchorOffset = Vector3.zero;
 
-
+    private BoxCollider selectionCollider = null;
 
     /*
      * SceneNode Content
@@ -33,15 +40,13 @@ public class Furniture : MonoBehaviour {
      */
 
 
-    //the location the node pivots around when scaling and rotating
-    public Vector3 Pivot = Vector3.zero;
 
-    //parent
-    private Matrix4x4 mCombinedParentXForm = Matrix4x4.identity;
-    public List<NodePrimitive> primitives;
+
+
 
     //The locatin of where the pivot indicator is
     public Transform AxisFrame;
+    public float axisFrameSize = 5.0f;
 
     //The Initial Transform (for reset)
     private Vector3 InitialPos;
@@ -55,6 +60,10 @@ public class Furniture : MonoBehaviour {
         InitialPos = transform.localPosition;
         InitialRot = transform.localRotation;
         InitialScale = transform.localScale;
+
+        InitializeSceneNode();
+
+        selectionCollider = GetComponent<BoxCollider>();
     }
 	
 	// Update is called once per frame
@@ -64,6 +73,11 @@ public class Furniture : MonoBehaviour {
             parentAnchorSurface = parent.GetAnchorSurface();
         }
 	}
+
+    private void InitializeSceneNode()
+    {
+        mCombinedParentXForm = Matrix4x4.identity;
+    }
 
     public void SetAnchorSurfaceVisible(bool visible)
     {
@@ -87,11 +101,11 @@ public class Furniture : MonoBehaviour {
     {
         if(parentAnchorSurface != null)
         {
-            transform.position = parentAnchorSurface.RestrictMotion(this, deltaPos);
+            Pivot += parentAnchorSurface.FixDelta(this, deltaPos);
         }
         else
         {
-            transform.position += deltaPos;
+            Pivot += deltaPos;
         }
 
     }
@@ -153,7 +167,6 @@ public class Furniture : MonoBehaviour {
 
         childFurn.SetParentAnchor(anchorSurface);
 
-        //NOT YET IMPLEMENTED
         if(anchorSurface != null)
         {
            anchorSurface.AnchorTransform(ref childFurn);
@@ -211,35 +224,60 @@ public class Furniture : MonoBehaviour {
      * SceneNode Content
      * 
      */
-    public void CompositeXForm(ref Matrix4x4 parentXForm)
+     //CompositeXForm adapted from prof. Sung's MP4
+    // tipPos: is the origin of this scene node
+    // topDir: is the y-direction of this node
+    public void CompositeXForm(ref Matrix4x4 parentXform, out Vector3 snPivot, out Vector3 snUp)
     {
-        Matrix4x4 pivot = Matrix4x4.TRS(Pivot, Quaternion.identity, Vector3.one);
+        Matrix4x4 pivot = Matrix4x4.TRS(Pivot, Quaternion.identity, Vector3.one);  // Pivot translation
+        Matrix4x4 invPivot = Matrix4x4.TRS(-Pivot, Quaternion.identity, Vector3.one);  // inv Pivot
         Matrix4x4 trs = Matrix4x4.TRS(transform.localPosition, transform.localRotation, transform.localScale);
 
-        mCombinedParentXForm = parentXForm * pivot * trs;
+        mCombinedParentXForm = parentXform * pivot * trs;
 
-        //propogate to children
+        // let's decompose the combined matrix into R, and S
+        Vector3 c0 = mCombinedParentXForm.GetColumn(0);
+        Vector3 c1 = mCombinedParentXForm.GetColumn(1);
+        Vector3 c2 = mCombinedParentXForm.GetColumn(2);
+        Vector3 s = new Vector3(c0.magnitude, c1.magnitude, c2.magnitude);
+        Matrix4x4 r = Matrix4x4.identity;
+        c0 /= s.x;  // normalize the columns
+        c1 /= s.y;
+        c2 /= s.z;
+        r.SetColumn(0, c0);
+        r.SetColumn(1, c1);
+        r.SetColumn(2, c2);
+        Quaternion q = Quaternion.LookRotation(c2, c1); // creates a rotation matrix with c2-Forward, c1-up
+
+        snPivot = mCombinedParentXForm.GetColumn(3);
+        snUp = c1;
+
+        if(selectionCollider != null)
+        {
+            selectionCollider.center = snPivot;
+        }
+
+        if (AxisFrame != null)
+        {
+            AxisFrame.localPosition = snPivot;  // our location is Pivot 
+            AxisFrame.localScale = s * axisFrameSize;
+            AxisFrame.localRotation = q;
+        }
+
+        // propagate to all children
         foreach (Transform child in transform)
         {
-            Furniture node = child.GetComponent<Furniture>();
-            if (node != null)
+            Furniture cn = child.GetComponent<Furniture>();
+            if (cn != null)
             {
-                node.CompositeXForm(ref mCombinedParentXForm);
+                cn.CompositeXForm(ref mCombinedParentXForm, out snPivot, out snUp);
             }
         }
 
+        // disenminate to primitives
         foreach (NodePrimitive p in primitives)
         {
             p.LoadShaderMatrix(ref mCombinedParentXForm);
-        }
-
-        //compute axisFrame
-        if (AxisFrame != null)
-        {
-            AxisFrame.localPosition = mCombinedParentXForm.MultiplyPoint(Vector3.zero);
-            Vector3 fwd = mCombinedParentXForm.MultiplyPoint(Vector3.forward) - AxisFrame.localPosition;
-            Vector3 up = mCombinedParentXForm.MultiplyPoint(Vector3.up) - AxisFrame.localPosition;
-            AxisFrame.localRotation = Quaternion.LookRotation(fwd, up);
         }
     }
 

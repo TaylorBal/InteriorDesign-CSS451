@@ -65,16 +65,11 @@ public class Manipulator : MonoBehaviour {
         mode = newMode;
     }
 
-    public void SetAxesOrientation(Quaternion orientation)
-    {
-        if (hasAxes)
-        {
-            axes.transform.localRotation = orientation;
-        }
-    }
-
     public void Select(Furniture toSelect)
     {
+        if(mSelected !=  null)
+            mSelected.AxisFrame = null;
+
         mSelected = toSelect;
         if(!hasAxes)
         {
@@ -82,7 +77,7 @@ public class Manipulator : MonoBehaviour {
             hasAxes = true;
         }
 
-        SetAxesOrientation(mSelected.transform.localRotation);  //or just .rotation?
+        mSelected.AxisFrame = transform;
     }
 
     public void Deselect()
@@ -93,7 +88,11 @@ public class Manipulator : MonoBehaviour {
             hasAxes = false;
         }
 
-        mSelected = null;
+        if (mSelected != null)
+        {
+            mSelected.AxisFrame = null;
+            mSelected = null;
+        }
     }
 
     public void MoveX(Vector3 inputVec)
