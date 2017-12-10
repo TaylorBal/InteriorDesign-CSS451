@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraControl : MonoBehaviour {
+public class CameraControlPreview : MonoBehaviour {
 
     public Transform LookAt;
 

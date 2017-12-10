@@ -7,8 +7,6 @@ using UnityEngine.EventSystems;
 public partial class TheWorld : MonoBehaviour {
 
     public Camera MainCamera = null;
-    public Camera PreviewCamera = null;
-    public PreviewCameraControl PrevCamControl = null;
 
     void LMBService()
     {
@@ -29,7 +27,7 @@ public partial class TheWorld : MonoBehaviour {
             if (hit)
             {
                 //string name = hitInfo.transform.gameObject.name;
-                PrevCamControl.OpenPreviewObject(hitInfo.transform.gameObject);
+                //PrevCamControl.OpenPreviewObject(hitInfo.transform.gameObject);
             }
         }
     }
