@@ -48,9 +48,9 @@ public class CameraControl : MonoBehaviour {
             }
             else if (Input.GetMouseButton(1)) // Camera tracking
             {
-                Vector3 delta = dx * kPixelToDistant * transform.right + dy * kPixelToDistant * transform.up;
-                transform.localPosition += delta;
-                LookAt.localPosition += delta;
+                //Vector3 delta = dx * kPixelToDistant * transform.right + dy * kPixelToDistant * transform.up;
+                //transform.localPosition += delta;
+                //LookAt.localPosition += delta;
             }
         }
 
@@ -117,6 +117,6 @@ public class CameraControl : MonoBehaviour {
 
     public void SetLookAtPos(Vector3 p)
     {
-        LookAt.localPosition = p;
+        //LookAt.localPosition = p;
     }
 }

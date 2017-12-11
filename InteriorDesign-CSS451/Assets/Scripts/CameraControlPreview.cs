@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraControlPreview : MonoBehaviour {
 
+    public GameObject previewObject;
+
     public Transform LookAt;
 
     private float mMouseX = 0f;
@@ -21,14 +23,14 @@ public class CameraControlPreview : MonoBehaviour {
         // this will change the rotation
         transform.LookAt(LookAt.transform);
 
-        if (Input.GetKey(KeyCode.LeftAlt) &&
+        if (Input.GetKey(KeyCode.LeftControl) &&
             (Input.GetMouseButtonDown(0) || (Input.GetMouseButtonDown(1))))
         {
             mMouseX = Input.mousePosition.x;
             mMouseY = Input.mousePosition.y;
             // Debug.Log("MouseButtonDown 0: (" + mMouseX + " " + mMouseY);
         }
-        else if (Input.GetKey(KeyCode.LeftAlt) &&
+        else if (Input.GetKey(KeyCode.LeftControl) &&
                 (Input.GetMouseButton(0) || (Input.GetMouseButton(1))))
         {
             float dx = mMouseX - Input.mousePosition.x;
@@ -48,13 +50,13 @@ public class CameraControlPreview : MonoBehaviour {
             }
             else if (Input.GetMouseButton(1)) // Camera tracking
             {
-                Vector3 delta = dx * kPixelToDistant * transform.right + dy * kPixelToDistant * transform.up;
-                transform.localPosition += delta;
-                LookAt.localPosition += delta;
+                //Vector3 delta = dx * kPixelToDistant * transform.right + dy * kPixelToDistant * transform.up;
+                //transform.localPosition += delta;
+                //LookAt.localPosition += delta;
             }
         }
 
-        if (Input.GetKey(KeyCode.LeftAlt))  // dolly or zooming
+        if (Input.GetKey(KeyCode.LeftControl))  // dolly or zooming
         {
             Vector2 d = Input.mouseScrollDelta;
             // move camera position towards LookAt
@@ -117,6 +119,24 @@ public class CameraControlPreview : MonoBehaviour {
 
     public void SetLookAtPos(Vector3 p)
     {
-        LookAt.localPosition = p;
+        //LookAt.localPosition = p;
+    }
+
+    public void OpenPreviewObject(GameObject inPreviewObject)
+    {
+        //Delete previous preview object if it exists
+        if (previewObject != null)
+        {
+            DestroyImmediate(previewObject);
+            Debug.Log("Destroy preview");
+        }
+
+        //Instantiate copy
+        previewObject = Instantiate(inPreviewObject);
+        Debug.Log("Instantiate");
+
+        //Look at copy
+        LookAt = previewObject.transform;
+        Debug.Log("Look at");
     }
 }
