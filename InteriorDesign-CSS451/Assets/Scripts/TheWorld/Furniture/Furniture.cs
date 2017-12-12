@@ -118,15 +118,15 @@ public class Furniture : MonoBehaviour {
         }
         else if (tag == "Table")
         {
-            Debug.Log("not implemented");
+            primitives[0].GetComponent<MeshRenderer>().material = materials[index];
         }
         else if (tag == "Painting")
         {
-            Debug.Log("not implemented");
+            primitives[0].GetComponent<MeshRenderer>().material = materials[index];
         }
         else if (tag == "Window")
         {
-            Debug.Log("not implemented");
+            primitives[0].GetComponent<MeshRenderer>().material = materials[index];
         }
 
         return true;
@@ -150,17 +150,6 @@ public class Furniture : MonoBehaviour {
         }
 
         Pivot += fixedDelta;
-    }
-
-    public void Rotate(Vector3 axis, float angle)
-    {
-        //I don't have rotation restrictions set up yet
-        //transform.localRotation *= q;
-    }
-
-    public void Scale(Vector3 scaleDelta)
-    {
-
     }
 
 
@@ -296,7 +285,8 @@ public class Furniture : MonoBehaviour {
 
         if(selectionCollider != null)
         {
-            selectionCollider.center = snPivot + colliderOffset;
+            //selectionCollider.center = snPivot + colliderOffset;
+            selectionCollider.center = mCombinedParentXForm.MultiplyPoint(colliderOffset);
         }
 
         if (AxisFrame != null)

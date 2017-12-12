@@ -108,7 +108,7 @@ public partial class TheWorld : MonoBehaviour {
 
         //now copy all of the relevant properties over
         previewFurniture.curMatIdx = toCopy.curMatIdx;
-
+        previewFurniture.ApplyMaterial(toCopy.curMatIdx);
 
         return previewFurniture;
     }
@@ -122,10 +122,5 @@ public partial class TheWorld : MonoBehaviour {
     public Furniture GetPreviewFurniture()
     {
         return previewFurniture;
-    }
-
-    public void ApplyPreviewChanges(Furniture preview)
-    {
-        
     }
 }
