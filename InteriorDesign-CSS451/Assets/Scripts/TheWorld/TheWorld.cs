@@ -99,7 +99,11 @@ public partial class TheWorld : MonoBehaviour {
             previewRoot.DeleteChild(previewRoot.childrenFurniture[0]);
 
         //then add a new child, the same type as the toCopy
-       previewFurniture = AddFurniture(toCopy.tag, previewRoot);
+        previewFurniture = AddFurniture(toCopy.tag, previewRoot);
+
+        if (previewFurniture == null)
+            return null;
+
         previewFurniture.SetPreview();
 
         //now copy all of the relevant properties over
@@ -107,6 +111,12 @@ public partial class TheWorld : MonoBehaviour {
 
 
         return previewFurniture;
+    }
+
+    public void ClearPreviewFurniture()
+    {
+        if (previewRoot.childrenFurniture.Count > 0)
+            previewRoot.DeleteChild(previewRoot.childrenFurniture[0]);
     }
 
     public Furniture GetPreviewFurniture()

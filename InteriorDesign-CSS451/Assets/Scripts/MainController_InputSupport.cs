@@ -9,12 +9,12 @@ public partial class MainController : MonoBehaviour
     manipAxis curManipAxis;
 
     private void ProcessInput()
-    {
+    {            
         if (Input.GetMouseButtonDown(0))
         {
             SelectAnObject();
         }
-        else if (Input.GetMouseButton(0))
+        else if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl))
         {
             DragManipulator();
         }

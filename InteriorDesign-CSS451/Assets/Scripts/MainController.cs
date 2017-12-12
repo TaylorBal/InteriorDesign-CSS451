@@ -28,6 +28,7 @@ public partial class MainController : MonoBehaviour {
     //UI Elements Go Here
     public AddFurnitureControl addControl = null;
     public AnchorPlaneControl aPlaneControl = null;
+    public PreviewMenuControl prevMenuControl = null;
 
     // Use this for initialization
     void Start()
@@ -43,9 +44,13 @@ public partial class MainController : MonoBehaviour {
         //UI asserts
         Debug.Assert(addControl != null);
         Debug.Assert(aPlaneControl != null);
+        Debug.Assert(prevMenuControl != null);
 
         addControl.SetAddListener(AddFurniture);
         aPlaneControl.SetToggleListener(SetAnchorPlaneVisible);
+        prevMenuControl.SetApplyListener(ApplyTextureChanges);
+        prevMenuControl.SetTexListener(ChangeTexture);
+        prevMenuControl.SetDeleteListener(DeleteSelected);
     }
 
     // Update is called once per frame
@@ -88,5 +93,37 @@ public partial class MainController : MonoBehaviour {
 
          previewObject = previewFurniture.gameObject;
          previewCameraContol.previewObject = previewFurniture.gameObject;
+    }
+
+    void DeleteSelected()
+    {
+        if (selected == null)
+            return;
+
+        if ((selected.tag == "Room") ||
+                (selected.tag == "Floor") ||
+                (selected.tag == "Wall"))
+            return;
+
+        theWorld.RemoveFurniture(selected);
+        ResetManipulator();
+        selected = null;
+        previewCameraContol.previewObject = null;
+        theWorld.ClearPreviewFurniture();
+    }
+
+    void ChangeTexture()
+    {
+        Furniture f = previewObject.GetComponent<Furniture>();
+
+        int curMatIdx = f.curMatIdx;
+        f.ApplyMaterial((curMatIdx + 1) % f.materials.Count);   //cycle to the next one, loop over
+    }
+
+    void ApplyTextureChanges()
+    {
+        Furniture f = previewObject.GetComponent<Furniture>();
+
+        selected.ApplyMaterial(f.curMatIdx);
     }
 }

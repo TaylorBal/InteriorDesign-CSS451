@@ -10,7 +10,8 @@ public class Manipulator : MonoBehaviour {
 
     private bool hasAxes = false;
     private GameObject axesType = null;
-    public GameObject axes;
+    public GameObject axes = null;
+    public AxisFrm AF = null;
 
     public Vector3 manipSensitivity = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -39,6 +40,14 @@ public class Manipulator : MonoBehaviour {
         {
             axes.transform.localPosition = transform.localPosition;
             axes.transform.localRotation = transform.localRotation;
+        }
+
+        if (mSelected != null)
+        {
+            if (hasAxes)
+            {
+                AF.SetActiveState(mSelected.canTranslate);       
+            }
         }
 	}
 
@@ -75,6 +84,7 @@ public class Manipulator : MonoBehaviour {
         if(!hasAxes)
         {
             axes = Instantiate(axesType, mSelected.transform);
+            AF = axes.GetComponent<AxisFrm>();
             hasAxes = true;
         }
 
@@ -88,6 +98,7 @@ public class Manipulator : MonoBehaviour {
         if(hasAxes)
         {
             Destroy(axes);
+            AF = null;
             hasAxes = false;
         }
 
@@ -104,6 +115,9 @@ public class Manipulator : MonoBehaviour {
             return;
 
         if (hasAxes == false)
+            return;
+
+        if (!mSelected.canTranslate[0])
             return;
 
         float mag = manipSensitivity.x * Vector3.Dot(inputVec, axes.transform.right);
@@ -127,6 +141,9 @@ public class Manipulator : MonoBehaviour {
         if (hasAxes == false)
             return;
 
+        if (!mSelected.canTranslate[1])
+            return;
+
         float mag = manipSensitivity.y * Vector3.Dot(inputVec, axes.transform.up);
         switch (mode)
         {
@@ -147,6 +164,9 @@ public class Manipulator : MonoBehaviour {
             return;
 
         if (hasAxes == false)
+            return;
+
+        if (!mSelected.canTranslate[2])
             return;
 
         float mag = manipSensitivity.z * Vector3.Dot(inputVec, axes.transform.forward);

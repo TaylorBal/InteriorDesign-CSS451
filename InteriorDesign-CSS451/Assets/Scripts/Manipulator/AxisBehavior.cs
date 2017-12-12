@@ -23,4 +23,5 @@ public class AxisBehavior : MonoBehaviour {
         GetComponent<MeshRenderer>().material = basicMat;
         return 0; //null orientation
     }
+
 }

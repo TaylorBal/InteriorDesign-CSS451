@@ -27,6 +27,7 @@ public class Furniture : MonoBehaviour {
     //Anchor Surface (where children can attach)
     public AnchorSurface anchorSurface = null;
     public AnchorSurface parentAnchorSurface = null;
+    public bool[] canTranslate = { true, true, true };
 
     //Anchor Point (where the object meet's its
     //parent's anchor surface
@@ -138,15 +139,17 @@ public class Furniture : MonoBehaviour {
      */
     public void Translate(Vector3 deltaPos)
     {
+        Vector3 fixedDelta;
         if(parentAnchorSurface != null)
         {
-            Pivot += parentAnchorSurface.FixDelta(this, deltaPos);
+            fixedDelta = parentAnchorSurface.FixDelta(this, deltaPos);
         }
         else
         {
-            Pivot += deltaPos;
+            fixedDelta = deltaPos;
         }
 
+        Pivot += fixedDelta;
     }
 
     public void Rotate(Vector3 axis, float angle)

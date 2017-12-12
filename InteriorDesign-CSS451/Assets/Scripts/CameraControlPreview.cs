@@ -56,7 +56,7 @@ public class CameraControlPreview : MonoBehaviour {
 
         if (dragging)
         {
-            RotateCameraAboutUp(-deltaMouse.x * sensitivity.x);
+            RotateCameraAboutUp(deltaMouse.x * sensitivity.x);
             RotateCameraAboutSide(-deltaMouse.y * sensitivity.y);
         }
 
