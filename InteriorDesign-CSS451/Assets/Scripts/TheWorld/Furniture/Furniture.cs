@@ -142,10 +142,10 @@ public class Furniture : MonoBehaviour {
 
     //Try to add a piece of furniture as the child of this one
     //Hierarchy restrictions can cause this to fail
-    public bool AddChild(GameObject prefab)
+    public Furniture AddChild(GameObject prefab)
     {
         if (!IsWhitelisted(prefab.tag))
-            return false;
+            return null;
 
         //Do the actual add process
         GameObject child = Instantiate(prefab, transform);
@@ -167,7 +167,7 @@ public class Furniture : MonoBehaviour {
            anchorSurface.AnchorTransform(ref childFurn);
         }
 
-        return true;
+        return childFurn;
     }
 
     public bool DeleteChild(Furniture child)

@@ -38,6 +38,7 @@ public class Manipulator : MonoBehaviour {
 		if(hasAxes)
         {
             axes.transform.localPosition = transform.localPosition;
+            axes.transform.localRotation = transform.localRotation;
         }
 	}
 
@@ -77,7 +78,9 @@ public class Manipulator : MonoBehaviour {
             hasAxes = true;
         }
 
+
         mSelected.AxisFrame = transform;
+
     }
 
     public void Deselect()

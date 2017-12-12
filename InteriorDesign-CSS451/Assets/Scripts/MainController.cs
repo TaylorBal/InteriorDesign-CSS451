@@ -54,7 +54,12 @@ public partial class MainController : MonoBehaviour {
     {
         if (selected != null)
         {
-            theWorld.AddFurniture(toAdd, selected);
+            Furniture toSelect = theWorld.AddFurniture(toAdd, selected);
+            if(toSelect != null)
+            {
+                manipulator.Select(toSelect);
+                selected = toSelect;
+            }
         }
     }
 

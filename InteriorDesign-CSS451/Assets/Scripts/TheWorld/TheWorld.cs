@@ -54,18 +54,15 @@ public partial class TheWorld : MonoBehaviour {
 
     //add a piece of furniture into the scene
     //Can fail, based on hierarcy restrictions
-    public bool AddFurniture(string toAdd, Furniture parent)
+    public Furniture AddFurniture(string toAdd, Furniture parent)
     {
         Debug.Log("TheWorld making furniture (" + toAdd + ")");
 
         GameObject prefab = FindPrefabByName(toAdd);
         if (prefab == null)
-            return false;
+            return null;
 
-        if (!parent.AddChild(prefab))
-            return false;
-
-        return true;
+        return parent.AddChild(prefab);
     }
 
     //Remove a piece of furniture from the scene
