@@ -76,7 +76,7 @@ public class AnchorSurface : MonoBehaviour
         Vector3 s = new Vector3(c0.magnitude, c1.magnitude, c2.magnitude);
         Quaternion q = Quaternion.LookRotation(c2 / s.y, c1 / s.z); // creates a rotation matrix with c2-Forward, c1-up
 
-        transform.position = pXForm.GetColumn(3);       //using localPosition here does WEIRD things?
+        transform.position = pXForm.GetColumn(3);
         transform.localPosition += AnchorOffset;
 
         transform.localScale = s;

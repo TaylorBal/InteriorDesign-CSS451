@@ -21,11 +21,11 @@ public class CameraControlPreview : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (LookAt == null)
-            return;
-
-        // this will change the rotation
-        transform.LookAt(LookAt.transform);
+        if (LookAt != null)
+        {
+            // this will change the rotation
+            transform.LookAt(LookAt.transform);
+        }
 
         if (Input.GetKey(KeyCode.LeftControl) &&
             (Input.GetMouseButtonDown(0) || (Input.GetMouseButtonDown(1))))

@@ -88,6 +88,17 @@ public class Furniture : MonoBehaviour {
         }
     }
 
+    public void SetPreview()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Preview");
+
+        // propagate to all children
+        foreach (Transform child in transform)
+        {
+            child.gameObject.layer = LayerMask.NameToLayer("Preview");
+        }
+    }
+
     /*
      * Transform modificaton
      * ->We implement our own because they are restricted

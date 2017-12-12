@@ -38,7 +38,7 @@ public partial class TheWorld : MonoBehaviour {
         Vector3 up = Vector3.up;
         theRoom.CompositeXForm(ref m, out pivot, out up);
 
-        Matrix4x4 m2 = Matrix4x4.TRS(transform.localPosition + new Vector3(10, 0, 0), transform.localRotation, transform.localScale);
+        Matrix4x4 m2 = Matrix4x4.TRS(transform.localPosition, transform.localRotation, transform.localScale);
         previewRoot.CompositeXForm(ref m2, out pivot, out up);
     }
 
@@ -102,6 +102,7 @@ public partial class TheWorld : MonoBehaviour {
 
         //then add a new child, the same type as the toCopy
        previewFurniture = AddFurniture(toCopy.tag, previewRoot);
+        previewFurniture.SetPreview();
 
         //now copy all of the relevant properties over
         
