@@ -93,6 +93,7 @@ public partial class MainController : MonoBehaviour
             ResetManipulator();
             manipulator.Select(selectedFurniture);
             selectedFurniture.AxisFrame = manipulator.transform;
+            selected = selectedFurniture;
             return;
         }
 

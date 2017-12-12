@@ -10,7 +10,7 @@ public partial class MainController : MonoBehaviour {
     //Camera
     public CameraControl mainCameraControl = null;
     public Camera MainCamera = null;
-    public Furniture testParent = null;
+    public Furniture selected = null;
 
     //EventSystem For Input
     public EventSystem eventSystem = null;
@@ -34,7 +34,6 @@ public partial class MainController : MonoBehaviour {
         Debug.Assert(eventSystem != null);
 
         //Debug.Assert(addControl != null);
-        Debug.Assert(testParent != null);
 
         //UI asserts
         Debug.Assert(addControl != null);
@@ -53,7 +52,10 @@ public partial class MainController : MonoBehaviour {
 
     void AddFurniture(string toAdd)
     {
-        theWorld.AddFurniture(toAdd, testParent);
+        if (selected != null)
+        {
+            theWorld.AddFurniture(toAdd, selected);
+        }
     }
 
     void SetAnchorPlaneVisible(bool visible)

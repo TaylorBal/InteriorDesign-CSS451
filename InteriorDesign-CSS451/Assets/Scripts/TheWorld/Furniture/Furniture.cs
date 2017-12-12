@@ -39,11 +39,6 @@ public class Furniture : MonoBehaviour {
      * These are variables borrowed from the SceneNode class in MP4
      */
 
-
-
-
-
-
     //The locatin of where the pivot indicator is
     public Transform AxisFrame;
     public float axisFrameSize = 5.0f;
