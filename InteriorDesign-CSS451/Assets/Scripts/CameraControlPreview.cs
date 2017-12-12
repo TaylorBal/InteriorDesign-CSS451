@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class CameraControlPreview : MonoBehaviour {
 
-    public GameObject previewObject;
+    public GameObject previewObject = null;
+    public Transform LookAt = null;
 
-    public Transform LookAt;
+    bool dragging = false;
 
     private float mMouseX = 0f;
     private float mMouseY = 0f;
+
+    public Vector3 sensitivity = new Vector3(1.0f, 1.0f, 1.0f);
     private const float kPixelToDegree = 0.1f;
     private const float kPixelToDistant = 0.05f;
+
+    public float zoomMin = 0.5f;
+    public float zoomMax = 20.0f;
 
     // Use this for initialization
     void Start () {
@@ -21,54 +27,51 @@ public class CameraControlPreview : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (LookAt != null)
+        if (previewObject != null)
         {
             // this will change the rotation
-            transform.LookAt(LookAt.transform);
+            LookAt.position = previewObject.GetComponent<Furniture>().getXForm().MultiplyPoint(Vector3.zero);
+            transform.LookAt(LookAt);
         }
 
-        if (Input.GetKey(KeyCode.LeftControl) &&
-            (Input.GetMouseButtonDown(0) || (Input.GetMouseButtonDown(1))))
+        if(Input.GetKey(KeyCode.LeftControl))
         {
-            mMouseX = Input.mousePosition.x;
-            mMouseY = Input.mousePosition.y;
-            // Debug.Log("MouseButtonDown 0: (" + mMouseX + " " + mMouseY);
-        }
-        else if (Input.GetKey(KeyCode.LeftControl) &&
-                (Input.GetMouseButton(0) || (Input.GetMouseButton(1))))
-        {
-            float dx = mMouseX - Input.mousePosition.x;
-            float dy = mMouseY - Input.mousePosition.y;
-
-            // annoying bug: 
-            //     If MouseClick move AND THEN ALT-key
-            //     Encounter jump because mMouseX and mMouseY not initialized
-
-            mMouseX = Input.mousePosition.x;
-            mMouseY = Input.mousePosition.y;
-
-            if (Input.GetMouseButton(0)) // Camera Rotation
+            if(Input.GetMouseButtonDown(0))
             {
-                RotateCameraAboutUp(-dx * kPixelToDegree);
-                RotateCameraAboutSide(dy * kPixelToDegree);
-            }
-            else if (Input.GetMouseButton(1)) // Camera tracking
-            {
-                //Vector3 delta = dx * kPixelToDistant * transform.right + dy * kPixelToDistant * transform.up;
-                //transform.localPosition += delta;
-                //LookAt.localPosition += delta;
+                dragging = true;
             }
         }
 
-        if (Input.GetKey(KeyCode.LeftControl))  // dolly or zooming
+        if(Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftControl))
         {
-            Vector2 d = Input.mouseScrollDelta;
-            // move camera position towards LookAt
-            Vector3 v = transform.localPosition - LookAt.localPosition;
-            float dist = v.magnitude;
-            v /= dist;
-            float m = dist - d.y;
-            transform.localPosition = LookAt.localPosition + m * v;
+            dragging = false;
+        }
+
+
+        //find the delta mouse
+        Vector3 deltaMouse;
+        deltaMouse.x = Input.GetAxis("Mouse X");
+        deltaMouse.y = Input.GetAxis("Mouse Y");
+        deltaMouse.z = Input.GetAxis("Mouse ScrollWheel");     //Input.mouseposition only stores in x, y
+
+        if (dragging)
+        {
+            RotateCameraAboutUp(-deltaMouse.x * sensitivity.x);
+            RotateCameraAboutSide(-deltaMouse.y * sensitivity.y);
+        }
+
+        if(Input.GetKey(KeyCode.LeftControl))
+        {
+            float moveDist = deltaMouse.z * sensitivity.z;
+            Vector3 V = LookAt.localPosition - transform.localPosition;
+
+            if (V.magnitude < zoomMin && moveDist > 0)
+                return;
+
+            if (V.magnitude > zoomMax && moveDist < 0)
+                return;
+
+            transform.localPosition += moveDist * V.normalized;
         }
     }
 

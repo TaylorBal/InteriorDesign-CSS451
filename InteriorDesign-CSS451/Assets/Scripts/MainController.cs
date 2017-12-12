@@ -88,6 +88,5 @@ public partial class MainController : MonoBehaviour {
 
          previewObject = previewFurniture.gameObject;
          previewCameraContol.previewObject = previewFurniture.gameObject;
-         previewCameraContol.LookAt = previewFurniture.gameObject.transform;
     }
 }

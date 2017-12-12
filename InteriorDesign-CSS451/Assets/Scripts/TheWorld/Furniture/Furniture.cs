@@ -22,6 +22,7 @@ public class Furniture : MonoBehaviour {
 
     //A list of materials the user can choose from for this Furniture
     public List<Material> materials;
+    public int curMatIdx = 0;
 
     //Anchor Surface (where children can attach)
     public AnchorSurface anchorSurface = null;
@@ -97,6 +98,37 @@ public class Furniture : MonoBehaviour {
         {
             child.gameObject.layer = LayerMask.NameToLayer("Preview");
         }
+    }
+
+    public bool ApplyMaterial(int index)
+    {
+        if (index >= materials.Count)
+            return false;
+
+        curMatIdx = index;
+
+        if (tag == "Couch" || tag == "Vase")
+        {
+            //change the mat of each primitive
+            foreach (NodePrimitive p in primitives)
+            {
+                p.GetComponent<MeshRenderer>().material = materials[index];
+            }
+        }
+        else if (tag == "Table")
+        {
+            Debug.Log("not implemented");
+        }
+        else if (tag == "Painting")
+        {
+            Debug.Log("not implemented");
+        }
+        else if (tag == "Window")
+        {
+            Debug.Log("not implemented");
+        }
+
+        return true;
     }
 
     /*

@@ -94,8 +94,6 @@ public partial class TheWorld : MonoBehaviour {
 
     public Furniture makePreviewFurniture(Furniture toCopy)
     {
-        Debug.Log("TheWorld making preview furniture (" + toCopy.name + ")");
-
         //if the preview root has something in it, remove first
         if (previewRoot.childrenFurniture.Count > 0)
             previewRoot.DeleteChild(previewRoot.childrenFurniture[0]);
@@ -105,7 +103,7 @@ public partial class TheWorld : MonoBehaviour {
         previewFurniture.SetPreview();
 
         //now copy all of the relevant properties over
-        
+        previewFurniture.curMatIdx = toCopy.curMatIdx;
 
 
         return previewFurniture;
@@ -114,5 +112,10 @@ public partial class TheWorld : MonoBehaviour {
     public Furniture GetPreviewFurniture()
     {
         return previewFurniture;
+    }
+
+    public void ApplyPreviewChanges(Furniture preview)
+    {
+        
     }
 }
