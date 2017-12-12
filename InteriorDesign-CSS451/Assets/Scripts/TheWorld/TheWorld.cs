@@ -22,10 +22,13 @@ public partial class TheWorld : MonoBehaviour {
 
     //Essentially our "Root" node of the hierarchy
     public Furniture theRoom = null;
+    public Furniture previewRoot = null;
+    private Furniture previewFurniture = null;
 
 	// Use this for initialization
 	void Start () {
         Debug.Assert(theRoom != null);
+        Debug.Assert(previewRoot != null);
 	}
 	
 	// Update is called once per frame
@@ -34,13 +37,16 @@ public partial class TheWorld : MonoBehaviour {
         Vector3 pivot = Vector3.zero;
         Vector3 up = Vector3.up;
         theRoom.CompositeXForm(ref m, out pivot, out up);
+
+        Matrix4x4 m2 = Matrix4x4.TRS(transform.localPosition + new Vector3(10, 0, 0), transform.localRotation, transform.localScale);
+        previewRoot.CompositeXForm(ref m2, out pivot, out up);
     }
 
 
     /*
      *      Adding and Removing Furniture 
      */
-    GameObject FindPrefabByName(string name)
+    public GameObject FindPrefabByName(string name)
     {
         for(int i = 0; i < furniturePrefabs.Length; i++)
         {
@@ -84,5 +90,28 @@ public partial class TheWorld : MonoBehaviour {
                 return true;
         }
         return false;
+    }
+
+    public Furniture makePreviewFurniture(Furniture toCopy)
+    {
+        Debug.Log("TheWorld making preview furniture (" + toCopy.name + ")");
+
+        //if the preview root has something in it, remove first
+        if (previewRoot.childrenFurniture.Count > 0)
+            previewRoot.DeleteChild(previewRoot.childrenFurniture[0]);
+
+        //then add a new child, the same type as the toCopy
+       previewFurniture = AddFurniture(toCopy.tag, previewRoot);
+
+        //now copy all of the relevant properties over
+        
+
+
+        return previewFurniture;
+    }
+
+    public Furniture GetPreviewFurniture()
+    {
+        return previewFurniture;
     }
 }

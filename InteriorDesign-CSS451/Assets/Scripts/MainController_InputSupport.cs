@@ -81,7 +81,7 @@ public partial class MainController : MonoBehaviour
         bool hit = MouseSelectObject(out selectedObject, out hitPoint, LayerMask.GetMask("Furniture"));
 
         //we hit a piece of furniture
-        if (hit) //hit vertex and axes
+        if (hit)
         {
             //otherwise lets attach a Manipulator to this furniture
 			Furniture selectedFurniture = selectedObject.GetComponent<Furniture>();
@@ -94,6 +94,7 @@ public partial class MainController : MonoBehaviour
             manipulator.Select(selectedFurniture);
             selectedFurniture.AxisFrame = manipulator.transform;
             selected = selectedFurniture;
+            SetPreviewObject(selectedFurniture);
             return;
         }
 

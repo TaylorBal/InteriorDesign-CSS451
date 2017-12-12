@@ -177,9 +177,9 @@ public class Furniture : MonoBehaviour {
         if (!childrenFurniture.Contains(child))
             return false;
 
-        child.DeleteAllChildren();
+        //child.DeleteAllChildren();
         childrenFurniture.Remove(child);
-        Destroy(child);
+        DestroyImmediate(child.gameObject);
 
         return true;
     }

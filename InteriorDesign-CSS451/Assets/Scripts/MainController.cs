@@ -12,6 +12,10 @@ public partial class MainController : MonoBehaviour {
     public Camera MainCamera = null;
     public Furniture selected = null;
 
+    //for the preview
+    public GameObject previewObject = null;
+    public CameraControlPreview previewCameraContol = null;
+
     //EventSystem For Input
     public EventSystem eventSystem = null;
 
@@ -30,6 +34,7 @@ public partial class MainController : MonoBehaviour {
     {
         Debug.Assert(theWorld != null);
         Debug.Assert(mainCameraControl != null);
+        Debug.Assert(previewCameraContol != null);
         Debug.Assert(MainCamera != null);
         Debug.Assert(eventSystem != null);
 
@@ -61,10 +66,28 @@ public partial class MainController : MonoBehaviour {
                 selected = toSelect;
             }
         }
+
+
     }
 
     void SetAnchorPlaneVisible(bool visible)
     {
         theWorld.SetAnchorSufacesVisible(visible);
+    }
+
+    //give the preview a new object to mess with
+    void SetPreviewObject(Furniture toCopy)
+    {
+         if (previewCameraContol.previewObject == toCopy.gameObject)
+             return;
+
+         Furniture previewFurniture = theWorld.makePreviewFurniture(toCopy);
+
+         if (previewFurniture == null)
+             return;
+
+         previewObject = previewFurniture.gameObject;
+         previewCameraContol.previewObject = previewFurniture.gameObject;
+         previewCameraContol.LookAt = previewFurniture.gameObject.transform;
     }
 }

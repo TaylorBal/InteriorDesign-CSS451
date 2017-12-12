@@ -20,6 +20,10 @@ public class CameraControlPreview : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (LookAt == null)
+            return;
+
         // this will change the rotation
         transform.LookAt(LookAt.transform);
 
@@ -134,6 +138,8 @@ public class CameraControlPreview : MonoBehaviour {
         //Instantiate copy
         previewObject = Instantiate(inPreviewObject);
         Debug.Log("Instantiate");
+
+        previewObject.layer = LayerMask.GetMask("Preview");
 
         //Look at copy
         LookAt = previewObject.transform;
