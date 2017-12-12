@@ -33,6 +33,7 @@ public class Furniture : MonoBehaviour {
     public Vector3 AnchorPoint = Vector3.zero;
 
     private BoxCollider selectionCollider = null;
+    public Vector3 colliderOffset = Vector3.zero;
 
     /*
      * SceneNode Content
@@ -249,7 +250,7 @@ public class Furniture : MonoBehaviour {
 
         if(selectionCollider != null)
         {
-            selectionCollider.center = snPivot;
+            selectionCollider.center = snPivot + colliderOffset;
         }
 
         if (AxisFrame != null)
