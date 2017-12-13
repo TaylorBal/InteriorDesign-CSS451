@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteriorDesign-CSS451", "InteriorDesign-CSS451.csproj", "{ACF7F8E0-6E58-3503-8C5F-18FE244132A9}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteriorDesign-CSS451", "Assembly-CSharp.csproj", "{8F2A7949-7FE9-F789-1FC9-7A993B3B71AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,12 +9,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ACF7F8E0-6E58-3503-8C5F-18FE244132A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACF7F8E0-6E58-3503-8C5F-18FE244132A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACF7F8E0-6E58-3503-8C5F-18FE244132A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACF7F8E0-6E58-3503-8C5F-18FE244132A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F2A7949-7FE9-F789-1FC9-7A993B3B71AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F2A7949-7FE9-F789-1FC9-7A993B3B71AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F2A7949-7FE9-F789-1FC9-7A993B3B71AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F2A7949-7FE9-F789-1FC9-7A993B3B71AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal

@@ -29,6 +29,7 @@ public partial class MainController : MonoBehaviour {
     public AddFurnitureControl addControl = null;
     public AnchorPlaneControl aPlaneControl = null;
     public PreviewMenuControl prevMenuControl = null;
+    public MatNameIndicator matIndicator = null;
 
     // Use this for initialization
     void Start()
@@ -45,6 +46,7 @@ public partial class MainController : MonoBehaviour {
         Debug.Assert(addControl != null);
         Debug.Assert(aPlaneControl != null);
         Debug.Assert(prevMenuControl != null);
+        Debug.Assert(matIndicator != null);
 
         addControl.SetAddListener(AddFurniture);
         aPlaneControl.SetToggleListener(SetAnchorPlaneVisible);
@@ -93,6 +95,7 @@ public partial class MainController : MonoBehaviour {
 
          previewObject = previewFurniture.gameObject;
          previewCameraContol.previewObject = previewFurniture.gameObject;
+         matIndicator.SetMat(previewFurniture.materials[previewFurniture.curMatIdx]);
     }
 
     void DeleteSelected()
@@ -110,6 +113,8 @@ public partial class MainController : MonoBehaviour {
         selected = null;
         previewCameraContol.previewObject = null;
         theWorld.ClearPreviewFurniture();
+
+        matIndicator.SetMat(null);
     }
 
     void ChangeTexture()
@@ -118,6 +123,8 @@ public partial class MainController : MonoBehaviour {
 
         int curMatIdx = f.curMatIdx;
         f.ApplyMaterial((curMatIdx + 1) % f.materials.Count);   //cycle to the next one, loop over
+
+        matIndicator.SetMat(f.materials[f.curMatIdx]);
     }
 
     void ApplyTextureChanges()
